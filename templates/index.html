@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block body_block %}
+<div class="container">
+  <div class="jumbotron">
+    <h1>Bem vindo à pesquisa sobre dados de Imunização!</h1>
+    {% if user.is_authenticated %}
+        <h3><a href="/search_between_date/">Acessar Sistema</a></h3>
+    {% else %}
+        <h2></h2>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

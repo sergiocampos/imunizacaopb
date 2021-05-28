@@ -1,0 +1,286 @@
+{% load static %}
+{% load staticfiles %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+	<title>SES COVID Registro de Casos COVID19</title>
+	<link rel="stylesheet" href="">
+
+	<script language="JavaScript" type="text/javascript" src="/static/js/cidades-estados-1.4-utf8.js"></script>
+
+</head>
+<body>
+
+	<div class="container" style="border: 2px solid #cccccc; border-radius: 10px">
+		<div class="jumbotron">
+			<h1>SES COVID - Registro - Casos COVID19</h1>
+			<p></p>
+		</div>
+
+		<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/covid_list/">Principal</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/search_estabelecimento/">Registrar Caso</a>
+            </li>
+		    <!--
+		    <li class="nav-item">
+		      <a class="nav-link" href="/registro_covid/">Registrar Caso</a>
+		    </li>
+		-->
+      <li class="nav-item">
+        <a class="nav-link" href="#"></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/search_register/">Localizar</a>
+    </li>
+    <li class="nav-item">
+      {% if user.first_name == 'videofonista' or user.first_name == 'medico' or user.first_name == 'enfermeiro' %}
+      {% else %}
+        <a class="nav-link" href="/gerar_relatorios/">Relatórios</a>
+      {%endif%}
+    </li>
+    <li>
+     <a class="nav-link" href="/template_censo/">Censo Hospitalar</a>
+ </li>
+    <li>
+     <a class="nav-link" href="/change_password/">Alterar senha</a>
+ </li>
+ <li>
+     <a class="nav-link" href="/accounts/logout">Sair</a>
+ </li>
+</ul>
+</nav><br>
+
+<div class="container-fluid">
+ <div class="row">
+    <div class="col-sm-4" style="background-color:;">
+       <div style="position: relative; left: 0; top: 20%; width: 100%; text-align: center;">
+          <img src="https://docs.google.com/uc?id=1g14C98IyGkVYPNNkoLk20rGYVikptzcC" alt="" style=" background-color: ;width: 70%">
+      </div>
+  </div>
+
+  <div class="col-sm-4" style="">
+      <div class="col" style="text-align: center;">
+         <p>GOVERNO DO ESTADO DA PARAÍBA</p>
+         <p>SECRETARIA DE ESTADO DA SAÚDE</p>
+         <p></p>
+         <p><h7><b>Registro de Casos - Perfil {{user.first_name}} - Usuário: <i>{{user}}</i></b></h7></p>
+     </div>
+ </div>
+ <div class="col-sm-4" style="background-color:;">
+  <div style="position: relative; left: 0; top: 30%; width: 100%; text-align: center;">
+     <img src="https://docs.google.com/uc?id=11gNpuLZuHBRHHiSFZxcSp5CGlJla1PEw" alt="" style="background-color: ;width: 70%">
+ </div>
+</div>
+</div>
+<br>
+</div>
+<hr />
+
+<div class="row">
+ <div class="col-sm-5"></div>
+ <div class="col-sm-3">Notificações</div>
+ <div class="col-sm-4"></div>
+</div>            
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Data da notificação</th>
+        <th>Estabelecimento Solicitante</th>
+        <th>Paciente</th>
+        <th>Idade</th>
+        <th>Ações</th>
+        <th>Status</th>
+    </tr>
+</thead>
+<tbody>
+   {% for o in regs %}
+   <tr>
+    {% if o.andamento_processo == 'Cancelado' %}
+    <td style="color: #ff0000; font-size: 90%">
+
+        {{o.data_notificacao|date:'d/m/Y'}} - {{o.hora_notificacao|time:'H:i'}}
+    </td>
+    {%elif o.last_status == 'Obito' %}
+    <td style="color: #cc6699; font-size: 90%">
+
+        {{o.data_notificacao|date:'d/m/Y'}} - {{o.hora_notificacao|time:'H:i'}}
+    </td>
+    {%else%}
+    <td style="font-size: 90%">
+
+        {{o.data_notificacao|date:'d/m/Y'}} - {{o.hora_notificacao|time:'H:i'}}
+    </td>
+    {%endif%}
+
+    {% if o.andamento_processo == 'Cancelado' %}
+    <td style="color: #ff0000">
+       {% if o.estabelecimento_solicitante == '' or o.estabelecimento_solicitante == None %}
+       {{o.estabelecimento_solicitante_outro}}
+       {%else%}
+       {{o.estabelecimento_solicitante}}
+       {%endif%}
+   </td>
+   {% elif o.last_status == 'Obito' %}
+   <td style="color: #cc6699">
+    {% if o.estabelecimento_solicitante == '' or o.estabelecimento_solicitante == None %}
+    {{o.estabelecimento_solicitante_outro}}
+    {%else%}
+    {{o.estabelecimento_solicitante}}
+    {%endif%}
+</td>
+{%else%}
+<td>
+   {% if o.estabelecimento_solicitante == '' or o.estabelecimento_solicitante == None %}
+   {% if o.estabelecimento_solicitante_outro == '' or o.estabelecimento_solicitante_outro == None %}
+   {%else%}
+   {{o.estabelecimento_solicitante_outro}}
+   {%endif%}
+   {%else%}
+   {{o.estabelecimento_solicitante}}
+   {%endif%}
+</td>
+{%endif%}
+
+{% if o.andamento_processo == 'Cancelado' %}
+<td><a href="/status_registro/{{o.id}}/" style="color: #ff0000">{{o.nome_paciente}}</a></td>
+{% elif o.last_status == 'Obito' %}
+<td><a href="/status_registro/{{o.id}}/" style="color: #cc6699">{{o.nome_paciente}}</a></td>
+{%else%}
+<td><a href="/status_registro/{{o.id}}/">{{o.nome_paciente}}</a></td>
+{%endif%}
+{% if o.andamento_processo == 'Cancelado' %}
+<td style="color: #ff0000">
+   {% if o.idade_paciente == '' or o.idade_paciente == None %}
+   {%else%}
+   {{o.idade_paciente}}
+   {%endif%}
+</td>
+{% elif o.last_status == 'Obito' %}
+<td style="color: #cc6699">
+    {% if o.idade_paciente == '' or o.idade_paciente == None %}
+    {%else%}
+    {{o.idade_paciente}}
+    {%endif%}
+</td>
+{%else%}
+<td>
+   {% if o.idade_paciente == '' or o.idade_paciente == None %}
+   {%else%}
+   {{o.idade_paciente}}
+   {%endif%}
+</td>
+{%endif%}
+
+{% if o.andamento_processo == 'Cancelado' %}
+<td style="font-size: 87%">
+   <!--<a href="/regulacao_edit/{{o.id}}">Editar</a>-->
+   {% if o.andamento_processo == '' %}
+   <a href="/regulacao_search_estabelecimento/{{o.id}}/" style="color: #ff0000">Regular</a>
+   {%endif%}
+   
+   <a href="/regulacao_detail/{{o.id}}/" style="color: #ff0000">Ver</a>
+
+</td>
+{% elif o.last_status == 'Obito' %}
+<td style="font-size: 87%">
+    <!--<a href="/regulacao_edit/{{o.id}}">Editar</a>-->
+    
+    <a href="/regulacao_detail/{{o.id}}/" style="color: #cc6699">Ver</a>
+    
+
+</td>
+{%else%}
+<td style="font-size: 87%">
+   <!--<a href="/regulacao_edit/{{o.id}}">Editar</a>-->
+   {% if o.andamento_processo == '' %}
+   <a href="/regulacao/{{o.id}}/">Editar</a>
+   {%endif%}
+   
+   <a href="/regulacao_detail/{{o.id}}/">Ver</a>
+   
+
+</td>
+{%endif%}
+
+{% if o.andamento_processo == 'Cancelado' %}
+<td style="color: #ff0000">
+   {{o.andamento_processo}}        	
+</td>
+{%else%}
+<td style="font-size: 87%">
+
+   {% if 'Regulado' in o.last_status %}
+   <b style="color: #009933">{{o.last_status}}<br/></b>
+   {%endif%}
+   {% if 'Não Preenche Critérios' in o.last_status %}
+   <b style="color: #993300">{{o.last_status}}<br/></b>
+   {%endif%}
+   {% if 'Aguardando confirmação de Vaga' in o.last_status %}
+   <b style="color: #666699">{{o.last_status}}<br/></b>
+   {%endif%}
+   {% if 'Aguardando em Lista de Espera' in o.last_status %}
+   <b style="color: #cccc00">{{o.last_status}}<br/></b>
+   {%endif%}
+   {% if 'Obito' in o.last_status %}
+   <b style="color: #cc6699">{{o.last_status}}<br/></b>
+   {%endif%}
+   {% if 'Aguardando Informações' in o.last_status %}
+   <b style="color: #ffb366">{{o.last_status}}<br/></b>
+   {%endif%}
+   {% if 'Parecer Médico' in o.last_status %}
+   <b style="color: #e68a00">{{o.last_status}}<br/></b>
+   {%endif%}
+
+</td>
+{%endif%}
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+<div style="height: 50px"></div>
+<div class="pagination">
+ <span class="step-links" style="margin: auto">
+   {% if regs.has_previous %}
+   <a href="?page={{regs.previous_page_number}}">Anterior</a>
+   {% endif %}
+
+   <span class="current">
+       {{regs.number}} {% if regs %}de{%else%}{%endif%} {{regs.paginator.num_pages}}
+   </span>
+   {% if regs.has_next %}
+   <a href="?page={{regs.next_page_number}}">Próximo</a>
+   {% endif %}
+
+</span>  
+
+</div>
+
+
+</div><br />
+
+
+<div style="background-color: #e6e6e6;">
+
+ <br /><br />
+
+</div>
+
+</body>
+</html>
