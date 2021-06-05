@@ -123,8 +123,17 @@ def search_between_date(request):
 
 @login_required
 def search_between_date_set(request):
-	data_inicio = request.POST.get('data_inicio')
-	data_fim = request.POST.get('data_fim')
+	data_inicio_template = request.POST.get('data_inicio')
+	data_fim_template = request.POST.get('data_fim')
+
+	print("Data inicio capturada:", data_inicio_template)
+	print("Data fim capturada:", data_fim_template)
+
+	#data_inicio = '2021-05-28 12:00:00'
+	#data_fim = '2021-05-29 12:00:00'
+
+	data_inicio = datetime.strptime(data_inicio_template, '%Y/%m/%d %H:%M').strftime("%Y-%m-%d %H:%M:%S")
+	data_fim = datetime.strptime(data_fim_template, '%Y/%m/%d %H:%M').strftime("%Y-%m-%d %H:%M:%S")
 
 	es  =  Elasticsearch ( 
 		[ 'https://imunizacao-es.saude.gov.br/'], 
@@ -134,11 +143,7 @@ def search_between_date_set(request):
 
 	index = 'imunizacao-covid-pb'
 
-	#time_24_hrs = datetime.datetime.now() - datetime.timedelta(hours = 1)
-
-	#body={"query": { "bool": { "filter": [ { "term": { "@timestamp": '2021-04-18' } } ] }match_all": {}}}
 	body={"query":{"bool":{"filter":[{"range":{"data_importacao_rnds":{"gte":data_inicio,"lte":data_fim}}}]}}}
-	#body={"query": {"bool": { "must": [{"match": {"@timestamp": '2021-05-25'}}]}}}
 	results = elasticsearch.helpers.scan(es, query=body, index=index)
 	df = pd.DataFrame.from_dict([document['_source'] for document in results])
 
