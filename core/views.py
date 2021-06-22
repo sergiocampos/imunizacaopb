@@ -126,8 +126,8 @@ def search_between_date_set(request):
 	data_inicio_template = request.POST.get('data_inicio')
 	data_fim_template = request.POST.get('data_fim')
 
-	print("Data inicio capturada:", data_inicio_template)
-	print("Data fim capturada:", data_fim_template)
+	#print("Data inicio capturada:", data_inicio_template)
+	#print("Data fim capturada:", data_fim_template)
 
 	#data_inicio = '2021-05-28 12:00:00'
 	#data_fim = '2021-05-29 12:00:00'
