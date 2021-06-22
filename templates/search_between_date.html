@@ -86,9 +86,9 @@
 <hr />
 
 <div class="row">
-	<div class="col-sm-5"></div>
-	<div class="col-sm-3"><b class="btn btn-secondary btn-sm">Informe data de início e fim</b></div>
 	<div class="col-sm-4"></div>
+	<div class="col-sm-6"><h2><span class="badge badge-secondary">Escolha Data de Início e Fim:</span></h2></div>
+	<div class="col-sm-2"></div>
 </div><br />
 
 <div class="container mt-3">
@@ -96,7 +96,7 @@
 	<form enctype="multipart/form-data" action="submit" method="POST">{% csrf_token %}
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-1"></div>
+				<div class="col-sm-2"></div>
 				<div class="col-sm-5">Início
 					<div class="form-check-inline">
 						<input id="datetimepicker" type="text" class="form-control form-control-sm" name="data_inicio" required>
@@ -106,7 +106,7 @@
 					</div>
 				</div>
 				<div class="col-sm-1"></div>
-				<div class="col-sm-5">Fim
+				<div class="col-sm-4">Fim
 					<div class="form-check-inline">
 						<input id="datetimepicker2" type="text" class="form-control form-control-sm" name="data_fim" required>
 						<!--
