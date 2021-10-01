@@ -138,7 +138,8 @@ def search_between_date_set(request):
 	es  =  Elasticsearch ( 
 		[ 'https://imunizacao-es.saude.gov.br/'], 
 		http_auth = ( 'imunizacao-covid-pb' ,  'tiliqakera' ), 
-		esquema = "https"
+		esquema = "https",
+		request_timeout=100
 	)
 
 	index = 'imunizacao-covid-pb'
